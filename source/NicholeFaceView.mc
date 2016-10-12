@@ -97,7 +97,17 @@ class NicholeFaceView extends Ui.WatchFace {
 	}
 
 	function onEnterSleep() {
-		showOther = false;
+		clearData();
 		Ui.requestUpdate();
+	}
+
+	function clearData() {
+		secString = "";
+		batString = "";
+		day = "";
+		date = "";
+		month = "";
+		showOther = false;
+		return true;
 	}
 }

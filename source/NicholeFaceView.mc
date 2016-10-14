@@ -1,5 +1,4 @@
 using Toybox.Lang as Lang;
-using Toybox.Time as Time;
 using Toybox.System as Sys;
 using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
@@ -50,7 +49,7 @@ class NicholeFaceView extends Ui.WatchFace {
 
 			var battery = sysStats.battery;
 			batString = Lang.format("$1$",[battery.format("%01.0i")]) + '%';
-			batWidth = 10 - (battery / 10) + 190;
+			batWidth = 10 - (battery / 10) + 189;
 			if (battery >= 50) {
 				batColor = Gfx.COLOR_DK_GREEN;
 			}
@@ -63,13 +62,13 @@ class NicholeFaceView extends Ui.WatchFace {
 
 			dc.setPenWidth(10);
 			dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT);
-	    	dc.drawLine(202, 75, 188, 75);
+	    	dc.drawLine(188, 75, 202, 75);
 
 			dc.setPenWidth(8);
-	    	dc.drawLine(188, 75, 186, 75);
+	    	dc.drawLine(186, 75, 188, 75);
 
 			dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_TRANSPARENT);
-	    	dc.drawLine(200, 75, 190, 75);
+	    	dc.drawLine(189, 75, 201, 75);
 
 			dc.setColor(batColor, Gfx.COLOR_TRANSPARENT);
 	    	dc.drawLine(200, 75, batWidth, 75);
@@ -84,9 +83,7 @@ class NicholeFaceView extends Ui.WatchFace {
 		dc.drawText(179, 119, Gfx.FONT_MEDIUM, secString, Gfx.TEXT_JUSTIFY_LEFT);
 
 		dc.drawText(202, 6, Gfx.FONT_SMALL, day, Gfx.TEXT_JUSTIFY_RIGHT);
-		dc.setColor(Gfx.COLOR_DK_RED, Gfx.COLOR_TRANSPARENT);
 		dc.drawText(202, 23, Gfx.FONT_SMALL, date, Gfx.TEXT_JUSTIFY_RIGHT);
-		dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT);
 		dc.drawText(202, 40, Gfx.FONT_SMALL, month, Gfx.TEXT_JUSTIFY_RIGHT);
 
 		dc.drawText(202, 82, Gfx.FONT_SYSTEM_XTINY, batString, Gfx.TEXT_JUSTIFY_RIGHT);

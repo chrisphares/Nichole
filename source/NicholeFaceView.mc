@@ -15,13 +15,14 @@ class NicholeFaceView extends Ui.WatchFace {
 	var month = "";
 	var batColor = Gfx.COLOR_WHITE;
 	var batWidth = 0;
+	var nichole;
 
 	function initialize() {
 		WatchFace.initialize();
     }
 
 	function onLayout(dc) {
-		setLayout(Rez.Layouts.MainLayout(dc));
+		nichole = new Ui.Bitmap({:rezId=>Rez.Drawables.nichole});
     }
 
     function onUpdate(dc) {
@@ -30,10 +31,23 @@ class NicholeFaceView extends Ui.WatchFace {
 		var clockTime = Sys.getClockTime();
 
 		var hourString = clockTime.hour;
-		hourString = Lang.format("$1$",[hourString]);
+		hourString = Lang.format("$1$",[hourString.format("%02d")]);
 
 		var minString = clockTime.min;
 		minString = Lang.format("$1$",[minString.format("%02d")]);
+
+		// color hair
+		dc.setColor(Gfx.COLOR_YELLOW, Gfx.COLOR_TRANSPARENT);
+		dc.fillRectangle(0, 0, 100, 61);
+
+		// color shirt
+		dc.setColor(Gfx.COLOR_RED, Gfx.COLOR_TRANSPARENT);
+		dc.fillRectangle(0, 61, 100, 100);
+		dc.fillRectangle(20, 57, 30, 30);
+
+		// draw Nichole
+		// draw faces
+	    nichole.draw(dc);
 
 		if (showOther) {
 			secString = clockTime.sec;

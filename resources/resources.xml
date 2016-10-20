@@ -1,0 +1,3 @@
+<resources>
+ 	<font id="simple" filename="./drawables/simple.fnt" filter="0123456789"/>	
+</resources> 

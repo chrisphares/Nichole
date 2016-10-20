@@ -15,10 +15,12 @@ class NicholeFaceView extends Ui.WatchFace {
 	var month = "";
 	var batColor = Gfx.COLOR_WHITE;
 	var batWidth = 0;
+	var simpleFont;
 	var nichole;
 
 	function initialize() {
 		WatchFace.initialize();
+		simpleFont = Ui.loadResource(Rez.Fonts.simple);
     }
 
 	function onLayout(dc) {
@@ -87,19 +89,23 @@ class NicholeFaceView extends Ui.WatchFace {
 			dc.setColor(batColor, Gfx.COLOR_TRANSPARENT);
 	    	dc.drawLine(200, 75, batWidth, 75);
 		}
-
+		//draw minutes
 		dc.setColor(Gfx.COLOR_DK_RED, Gfx.COLOR_TRANSPARENT);
-		dc.drawText(175, 78, Gfx.FONT_NUMBER_THAI_HOT, minString, Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(171, 82, simpleFont, minString, Gfx.TEXT_JUSTIFY_RIGHT);
 
+		//draw hours
 		dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT);
-		dc.drawText(175, 6, Gfx.FONT_NUMBER_THAI_HOT, hourString, Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(171, 6, Gfx.FONT_NUMBER_THAI_HOT, hourString, Gfx.TEXT_JUSTIFY_RIGHT);
 
+		//draw seconds
 		dc.drawText(179, 119, Gfx.FONT_MEDIUM, secString, Gfx.TEXT_JUSTIFY_LEFT);
 
-		dc.drawText(202, 6, Gfx.FONT_SMALL, day, Gfx.TEXT_JUSTIFY_RIGHT);
+		//draw day | month | date
+		dc.drawText(202, 5, Gfx.FONT_SMALL, day, Gfx.TEXT_JUSTIFY_RIGHT);
 		dc.drawText(202, 23, Gfx.FONT_SMALL, date, Gfx.TEXT_JUSTIFY_RIGHT);
 		dc.drawText(202, 40, Gfx.FONT_SMALL, month, Gfx.TEXT_JUSTIFY_RIGHT);
 
+		//draw battery
 		dc.drawText(202, 82, Gfx.FONT_SYSTEM_XTINY, batString, Gfx.TEXT_JUSTIFY_RIGHT);
 	}
 

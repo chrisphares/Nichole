@@ -1,0 +1,85 @@
+<resources>
+
+<font id="simple" filename="./drawables/simple.fnt" filter="0123456789"/>
+
+<properties>
+	<property id="num_prop" type="number">11141120</property>
+	<property id="hair_prop" type="number">16755200</property>
+	<property id="shirt_prop" type="number">16711680</property>
+</properties>
+
+	<strings>
+		<string id="num_title">Number Color</string>
+		<string id="hair_title">Hair Color</string>
+		<string id="shirt_title">Shirt Color</string>
+		<string id="White">White</string>
+		<string id="Black">Black</string>
+		<string id="Lt_Gray">Light Gray</string>
+		<string id="Dk_Gray">Dark Gray</string>
+		<string id="Red">Red</string>
+		<string id="Dk_Red">Dark Red</string>
+		<string id="Orange">Orange</string>
+		<string id="Yellow">Yellow</string>
+		<string id="Green">Green</string>
+		<string id="Dk_Green">Dark Green</string>
+		<string id="Blue">Blue</string>
+		<string id="Dk_Blue">Dark Blue</string>
+		<string id="Pink">Pink</string>
+		<string id="Purple">Purple</string>
+		<string id="Blonde">Blonde</string>
+		<string id="Brunette">Brunette</string>
+		<string id="RedHead">RedHead</string>
+	</strings>
+
+	<settings>
+		<setting propertyKey="@Properties.num_prop" title="@Strings.num_title">
+			<settingConfig type="list">
+				<listEntry value="16777215">@Strings.White</listEntry>
+				<listEntry value="0">@Strings.Black</listEntry>
+				<listEntry value="11184810">@Strings.Lt_Gray</listEntry>
+				<listEntry value="5592405">@Strings.Dk_Gray</listEntry>
+				<listEntry value="16711680">@Strings.Red</listEntry>
+				<listEntry value="11141120">@Strings.Dk_Red</listEntry>
+				<listEntry value="16755200">@Strings.Orange</listEntry>
+				<listEntry value="16733440">@Strings.Yellow</listEntry>
+				<listEntry value="65280">@Strings.Green</listEntry>
+				<listEntry value="43520">@Strings.Dk_Green</listEntry>
+				<listEntry value="43775">@Strings.Blue</listEntry>
+				<listEntry value="255">@Strings.Dk_Blue</listEntry>
+				<listEntry value="16711935">@Strings.Pink</listEntry>
+				<listEntry value="11141375">@Strings.Purple</listEntry>
+			</settingConfig>
+        </setting>
+
+		<setting propertyKey="@Properties.hair_prop" title="@Strings.hair_title">
+			<settingConfig type="list">
+				<listEntry value="0">@Strings.Brunette</listEntry>
+				<listEntry value="16755200">@Strings.RedHead</listEntry>
+				<listEntry value="16733440">@Strings.Blonde</listEntry>
+				<listEntry value="43520">@Strings.Green</listEntry>
+				<listEntry value="255">@Strings.Blue</listEntry>
+				<listEntry value="16711935">@Strings.Pink</listEntry>
+				<listEntry value="11141375">@Strings.Purple</listEntry>
+			</settingConfig>
+		</setting>
+
+		<setting propertyKey="@Properties.shirt_prop" title="@Strings.shirt_title">
+			<settingConfig type="list">
+				<listEntry value="16777215">@Strings.White</listEntry>
+				<listEntry value="0">@Strings.Black</listEntry>
+				<listEntry value="11184810">@Strings.Lt_Gray</listEntry>
+				<listEntry value="5592405">@Strings.Dk_Gray</listEntry>
+				<listEntry value="16711680">@Strings.Red</listEntry>
+				<listEntry value="11141120">@Strings.Dk_Red</listEntry>
+				<listEntry value="16755200">@Strings.Orange</listEntry>
+				<listEntry value="16733440">@Strings.Yellow</listEntry>
+				<listEntry value="65280">@Strings.Green</listEntry>
+				<listEntry value="43520">@Strings.Dk_Green</listEntry>
+				<listEntry value="43775">@Strings.Blue</listEntry>
+				<listEntry value="255">@Strings.Dk_Blue</listEntry>
+				<listEntry value="16711935">@Strings.Pink</listEntry>
+				<listEntry value="11141375">@Strings.Purple</listEntry>
+			</settingConfig>
+		</setting>
+	</settings>
+</resources>

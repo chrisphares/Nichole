@@ -13,16 +13,35 @@ class NicholeFaceView extends Ui.WatchFace {
 	var day = "";
 	var date = "";
 	var month = "";
-	var batColor = Gfx.COLOR_WHITE;
-	var batWidth = 0;
 	var simpleFont;
 	var nichole;
 	var deviceSettings;
+	var numColor;
+	var hairColor;
+	var shirtColor;
 
 	function initialize() {
 		WatchFace.initialize();
 		simpleFont = Ui.loadResource(Rez.Fonts.simple);
 		deviceSettings = Sys.getDeviceSettings();
+
+		//pull data from Garmin Connect/storage
+		var app = App.getApp();
+
+		numColor = app.getProperty("num_prop");
+		if (numColor == null) {
+			numColor = Gfx.COLOR_DK_RED;
+		}
+
+		hairColor = app.getProperty("hair_prop");
+		if (hairColor == null) {
+			hairColor = Gfx.COLOR_YELLOW;
+		}
+
+		shirtColor = app.getProperty("shirt_prop");
+		if (shirtColor == null) {
+			shirtColor = Gfx.COLOR_RED;
+		}
     }
 
 	function onLayout(dc) {
@@ -52,11 +71,11 @@ class NicholeFaceView extends Ui.WatchFace {
 		minString = Lang.format("$1$",[minString.format("%02d")]);
 
 		// color hair
-		dc.setColor(Gfx.COLOR_YELLOW, Gfx.COLOR_TRANSPARENT);
+		dc.setColor(hairColor, Gfx.COLOR_TRANSPARENT);
 		dc.fillRectangle(0, 0, 100, 61);
 
 		// color shirt
-		dc.setColor(Gfx.COLOR_RED, Gfx.COLOR_TRANSPARENT);
+		dc.setColor(shirtColor, Gfx.COLOR_TRANSPARENT);
 		dc.fillRectangle(0, 61, 100, 100);
 		dc.fillRectangle(20, 57, 30, 30);
 
@@ -85,7 +104,7 @@ class NicholeFaceView extends Ui.WatchFace {
 			dc.drawText(125, 128, Gfx.FONT_SYSTEM_XTINY, string, Gfx.TEXT_JUSTIFY_LEFT);
 		}
 		//draw minutes
-		dc.setColor(Gfx.COLOR_DK_RED, Gfx.COLOR_TRANSPARENT);
+		dc.setColor(numColor, Gfx.COLOR_TRANSPARENT);
 		dc.drawText(150, 5, simpleFont, minString, Gfx.TEXT_JUSTIFY_LEFT);
 
 		//draw hours
@@ -96,7 +115,7 @@ class NicholeFaceView extends Ui.WatchFace {
 		dc.drawText(200, 65, Gfx.FONT_MEDIUM, secString, Gfx.TEXT_JUSTIFY_RIGHT);
 
 		//draw day | month | date
-		string = day + " " + month + " " + date;
+		string = day + " " + date + " " + month;
 		dc.drawText(200, 128, Gfx.FONT_SMALL, string, Gfx.TEXT_JUSTIFY_RIGHT);
 
 		//draw battery % value

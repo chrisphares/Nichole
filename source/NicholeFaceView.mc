@@ -17,10 +17,12 @@ class NicholeFaceView extends Ui.WatchFace {
 	var batWidth = 0;
 	var simpleFont;
 	var nichole;
+	var deviceSettings;
 
 	function initialize() {
 		WatchFace.initialize();
 		simpleFont = Ui.loadResource(Rez.Fonts.simple);
+		deviceSettings = Sys.getDeviceSettings();
     }
 
 	function onLayout(dc) {
@@ -31,11 +33,22 @@ class NicholeFaceView extends Ui.WatchFace {
 		View.onUpdate(dc);
 
 		var clockTime = Sys.getClockTime();
+		var hourString;
+		var minString;
+		var string;
 
-		var hourString = clockTime.hour;
-		hourString = Lang.format("$1$",[hourString.format("%02d")]);
+		if (deviceSettings.is24Hour == false) {
+			hourString = clockTime.hour % 12;
+			hourString = (hourString == 0) ? 12 : hourString;
+			//am|pm
+		}
+		else {
+			hourString = clockTime.hour;
+		}
 
-		var minString = clockTime.min;
+		hourString = Lang.format("$1$",[hourString.format("%01d")]);
+
+		minString = clockTime.min;
 		minString = Lang.format("$1$",[minString.format("%02d")]);
 
 		// color hair
@@ -51,7 +64,7 @@ class NicholeFaceView extends Ui.WatchFace {
 		// draw faces
 	    nichole.draw(dc);
 
-		if (showOther) {
+		if (showOther) { //low power mode
 			secString = clockTime.sec;
 			secString = Lang.format("$1$",[secString]);
 
@@ -64,49 +77,30 @@ class NicholeFaceView extends Ui.WatchFace {
 			date = Lang.format("$1$", [info.day]);
 
 			var battery = sysStats.battery;
-			batString = Lang.format("$1$",[battery.format("%01.0i")]) + '%';
-			batWidth = 10 - (battery / 10) + 189;
-			if (battery >= 50) {
-				batColor = Gfx.COLOR_DK_GREEN;
-			}
-			else if (battery >= 20) {
-				batColor = Gfx.COLOR_YELLOW;
-			}
-			else {
-				batColor = Gfx.COLOR_DK_RED;
-			}
+			batString = Lang.format("$1$",[battery.format("%01.0i")]);
 
-			dc.setPenWidth(10);
-			dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT);
-	    	dc.drawLine(188, 75, 202, 75);
-
-			dc.setPenWidth(8);
-	    	dc.drawLine(186, 75, 188, 75);
-
-			dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_TRANSPARENT);
-	    	dc.drawLine(189, 75, 201, 75);
-
-			dc.setColor(batColor, Gfx.COLOR_TRANSPARENT);
-	    	dc.drawLine(200, 75, batWidth, 75);
+			//draw battery '%'
+			dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);
+			string = "%";
+			dc.drawText(125, 128, Gfx.FONT_SYSTEM_XTINY, string, Gfx.TEXT_JUSTIFY_LEFT);
 		}
 		//draw minutes
 		dc.setColor(Gfx.COLOR_DK_RED, Gfx.COLOR_TRANSPARENT);
-		dc.drawText(171, 82, simpleFont, minString, Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(150, 5, simpleFont, minString, Gfx.TEXT_JUSTIFY_LEFT);
 
 		//draw hours
 		dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT);
-		dc.drawText(171, 6, Gfx.FONT_NUMBER_THAI_HOT, hourString, Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(148, 5, simpleFont, hourString, Gfx.TEXT_JUSTIFY_RIGHT);
 
 		//draw seconds
-		dc.drawText(179, 119, Gfx.FONT_MEDIUM, secString, Gfx.TEXT_JUSTIFY_LEFT);
+		dc.drawText(200, 65, Gfx.FONT_MEDIUM, secString, Gfx.TEXT_JUSTIFY_RIGHT);
 
 		//draw day | month | date
-		dc.drawText(202, 5, Gfx.FONT_SMALL, day, Gfx.TEXT_JUSTIFY_RIGHT);
-		dc.drawText(202, 23, Gfx.FONT_SMALL, date, Gfx.TEXT_JUSTIFY_RIGHT);
-		dc.drawText(202, 40, Gfx.FONT_SMALL, month, Gfx.TEXT_JUSTIFY_RIGHT);
+		string = day + " " + month + " " + date;
+		dc.drawText(200, 128, Gfx.FONT_SMALL, string, Gfx.TEXT_JUSTIFY_RIGHT);
 
-		//draw battery
-		dc.drawText(202, 82, Gfx.FONT_SYSTEM_XTINY, batString, Gfx.TEXT_JUSTIFY_RIGHT);
+		//draw battery % value
+		dc.drawText(122, 128, Gfx.FONT_SYSTEM_XTINY, batString, Gfx.TEXT_JUSTIFY_RIGHT);
 	}
 
 	function onExitSleep() {

@@ -53,7 +53,7 @@
 
 		<setting propertyKey="@Properties.hair_prop" title="@Strings.hair_title">
 			<settingConfig type="list">
-				<listEntry value="0">@Strings.Brunette</listEntry>
+				<listEntry value="5592405">@Strings.Brunette</listEntry>
 				<listEntry value="16755200">@Strings.RedHead</listEntry>
 				<listEntry value="16733440">@Strings.Blonde</listEntry>
 				<listEntry value="43520">@Strings.Green</listEntry>

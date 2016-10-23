@@ -3,6 +3,7 @@ using Toybox.System as Sys;
 using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
 using Toybox.Application as App;
+using Toybox.ActivityMonitor as Act;
 using Toybox.Time.Gregorian as Calendar;
 
 class NicholeFaceView extends Ui.WatchFace {
@@ -14,15 +15,19 @@ class NicholeFaceView extends Ui.WatchFace {
 	var date = "";
 	var month = "";
 	var simpleFont;
+	var simpleBoldFont;
 	var nichole;
 	var deviceSettings;
 	var numColor;
 	var hairColor;
 	var shirtColor;
+	var stepGoal;
+	var steps;
 
 	function initialize() {
 		WatchFace.initialize();
 		simpleFont = Ui.loadResource(Rez.Fonts.simple);
+		simpleBoldFont = Ui.loadResource(Rez.Fonts.simpleBold);
 		deviceSettings = Sys.getDeviceSettings();
 
 		//pull data from Garmin Connect/storage
@@ -52,9 +57,13 @@ class NicholeFaceView extends Ui.WatchFace {
 		View.onUpdate(dc);
 
 		var clockTime = Sys.getClockTime();
+		var activityInfo = Act.getInfo();
 		var hourString;
 		var minString;
 		var string;
+
+		stepGoal = activityInfo.stepGoal;
+		steps = activityInfo.steps;
 
 		if (deviceSettings.is24Hour == false) {
 			hourString = clockTime.hour % 12;
@@ -102,6 +111,15 @@ class NicholeFaceView extends Ui.WatchFace {
 			dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);
 			string = "%";
 			dc.drawText(125, 128, Gfx.FONT_SYSTEM_XTINY, string, Gfx.TEXT_JUSTIFY_LEFT);
+
+			//draw step goal
+			dc.setColor(Gfx.COLOR_DK_GRAY, Gfx.COLOR_TRANSPARENT);
+			dc.fillRectangle(100, 71, 75, 3);
+			dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT);
+			dc.drawText(100, 71, Gfx.FONT_SYSTEM_XTINY, steps, Gfx.TEXT_JUSTIFY_LEFT);
+			steps = 100 * steps / stepGoal;
+			dc.setColor(numColor, Gfx.COLOR_TRANSPARENT);
+			dc.fillRectangle(100, 71, steps, 3);
 		}
 		//draw minutes
 		dc.setColor(numColor, Gfx.COLOR_TRANSPARENT);
@@ -109,7 +127,7 @@ class NicholeFaceView extends Ui.WatchFace {
 
 		//draw hours
 		dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT);
-		dc.drawText(148, 5, simpleFont, hourString, Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(148, 5, simpleBoldFont, hourString, Gfx.TEXT_JUSTIFY_RIGHT);
 
 		//draw seconds
 		dc.drawText(200, 65, Gfx.FONT_MEDIUM, secString, Gfx.TEXT_JUSTIFY_RIGHT);
@@ -137,6 +155,7 @@ class NicholeFaceView extends Ui.WatchFace {
 		day = "";
 		date = "";
 		month = "";
+		steps = "";
 		showOther = false;
 		return true;
 	}

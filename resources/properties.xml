@@ -1,6 +1,7 @@
 <resources>
 
 <font id="simple" filename="./drawables/simple.fnt" filter="0123456789"/>
+<font id="simpleBold" filename="./drawables/simplebold.fnt" filter="0123456789"/>
 
 <properties>
 	<property id="num_prop" type="number">11141120</property>

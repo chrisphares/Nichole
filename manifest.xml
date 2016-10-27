@@ -3,6 +3,9 @@
 
         <iq:products>
             <iq:product id="square_watch"/>
+            <iq:product id="tall_watch"/>
+            <iq:product id="round_watch"/>
+            <iq:product id="semi_round_watch"/>
             <iq:product id="vivoactive"/>
             <iq:product id="fr920xt"/>
         </iq:products>

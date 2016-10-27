@@ -9,135 +9,167 @@ using Toybox.Time.Gregorian as Calendar;
 class NicholeFaceView extends Ui.WatchFace {
 
 	var showOther = false;
-	var secString = "";
-	var batString = "";
-	var day = "";
-	var date = "";
-	var month = "";
-	var simpleFont;
-	var simpleBoldFont;
-	var nichole;
-	var deviceSettings;
-	var numColor;
-	var hairColor;
-	var shirtColor;
-	var stepGoal;
-	var steps;
+
+	var hhTime,
+		mmTime,
+		ssTime,
+		battery,
+		percentString,
+		dayNum,
+		dateMonth,
+		stepCount;
+
+	var	simpleFont,
+		simpleBoldFont,
+		deviceSettings,
+		steps,
+		stepGoal,
+		stepBarDraw,
+		stepCountDraw;
 
 	function initialize() {
 		WatchFace.initialize();
-		simpleFont = Ui.loadResource(Rez.Fonts.simple);
-		simpleBoldFont = Ui.loadResource(Rez.Fonts.simpleBold);
+
+		//get device infor for formatting
 		deviceSettings = Sys.getDeviceSettings();
 
 		//pull data from Garmin Connect/storage
 		var app = App.getApp();
 
-		numColor = app.getProperty("num_prop");
-		if (numColor == null) {
-			numColor = Gfx.COLOR_DK_RED;
+		if (app.getProperty("num_prop")) {
+			$.numColor = app.getProperty("num_prop");
 		}
 
-		hairColor = app.getProperty("hair_prop");
-		if (hairColor == null) {
-			hairColor = Gfx.COLOR_YELLOW;
+		if (app.getProperty("hair_prop")) {
+			$.hairColor = app.getProperty("hair_prop");
 		}
 
-		shirtColor = app.getProperty("shirt_prop");
-		if (shirtColor == null) {
-			shirtColor = Gfx.COLOR_RED;
+		if (app.getProperty("shirt_prop")) {
+			$.shirtColor = app.getProperty("shirt_prop");
 		}
     }
 
 	function onLayout(dc) {
-		nichole = new Ui.Bitmap({:rezId=>Rez.Drawables.nichole});
+		setLayout(Rez.Layouts.nichole(dc));
+
+		//fonts
+		simpleFont = Ui.loadResource(Rez.Fonts.simple);
+		simpleBoldFont = Ui.loadResource(Rez.Fonts.simpleBold);
+
+		//text labels
+		stepCount = View.findDrawableById("stepLabel");	//step goal number
+		hhTime = View.findDrawableById("hhLabel");		//hour
+		mmTime = View.findDrawableById("mmLabel");		//minute
+		ssTime = View.findDrawableById("ssLabel");		//seconds
+		dayNum = View.findDrawableById("dayLabel");	//date string
+		dateMonth = View.findDrawableById("dateLabel");	//date string
+		battery = View.findDrawableById("batLabel");	//battery % string
+		percentString = View.findDrawableById("percentLabel"); //battery % sign
     }
 
     function onUpdate(dc) {
-		View.onUpdate(dc);
-
-		var clockTime = Sys.getClockTime();
-		var activityInfo = Act.getInfo();
-		var hourString;
-		var minString;
+		dc.clear();
 		var string;
 
-		stepGoal = activityInfo.stepGoal;
-		steps = activityInfo.steps;
+		var clockTime = Sys.getClockTime();
 
+		if (showOther) { //low power mode
+
+			ssTime.setText(Lang.format("$1$",[clockTime.sec])); 			// seconds
+
+			//draw day | month | date
+			var now = Time.now();
+			var info = Calendar.info(now, Time.FORMAT_LONG);
+			var day = Lang.format("$1$", [info.day_of_week]);
+			var month = Lang.format("$1$", [info.month]);
+			var date = Lang.format("$1$", [info.day]);
+			string = date + " " + month;
+			dateMonth.setText(string);
+			string = day;
+			dayNum.setText(string);
+
+			// battery % value
+			var sysStats = Sys.getSystemStats();
+			string = Lang.format("$1$",[sysStats.battery.format("%01.0i")]);
+			battery.setText(string);
+			percentString.setText("%");
+
+			//draw steps
+			var activityInfo = Act.getInfo();
+			stepGoal = activityInfo.stepGoal;
+			steps = activityInfo.steps;
+			stepCount.setText(steps.toString());
+		}
+		else {
+			dayNum.setText("");		//clear day
+			dateMonth.setText("");		//clear month & date
+			battery.setText("");		//clear battery % value
+			percentString.setText("");	//clear battery '%'
+			stepCount.setText("");		//clear step goal number
+			ssTime.setText("");			//clear seconds
+		}
+
+		//draw hours
 		if (deviceSettings.is24Hour == false) {
-			hourString = clockTime.hour % 12;
-			hourString = (hourString == 0) ? 12 : hourString;
+			string = clockTime.hour % 12;
+			string = (string == 0) ? 12 : string; //if it's 0, change to 12
+			string = Lang.format("$1$",[string.format("%01d")]);
 			//am|pm
 		}
 		else {
-			hourString = clockTime.hour;
+			string = Lang.format("$1$",[clockTime.hour.format("%01d")]);
 		}
+		hhTime.setText(string);
+		hhTime.setFont(simpleBoldFont);
+		hhTime.setColor($.numColor);
 
-		hourString = Lang.format("$1$",[hourString.format("%01d")]);
-
-		minString = clockTime.min;
-		minString = Lang.format("$1$",[minString.format("%02d")]);
-
-		// color hair
-		dc.setColor(hairColor, Gfx.COLOR_TRANSPARENT);
-		dc.fillRectangle(0, 0, 100, 61);
-
-		// color shirt
-		dc.setColor(shirtColor, Gfx.COLOR_TRANSPARENT);
-		dc.fillRectangle(0, 61, 100, 100);
-		dc.fillRectangle(20, 57, 30, 30);
-
-		// draw Nichole
-		// draw faces
-	    nichole.draw(dc);
-
-		if (showOther) { //low power mode
-			secString = clockTime.sec;
-			secString = Lang.format("$1$",[secString]);
-
-			var sysStats = Sys.getSystemStats();
-
-			var now = Time.now();
-			var info = Calendar.info(now, Time.FORMAT_LONG);
-			day = Lang.format("$1$", [info.day_of_week]);
-			month = Lang.format("$1$", [info.month]);
-			date = Lang.format("$1$", [info.day]);
-
-			var battery = sysStats.battery;
-			batString = Lang.format("$1$",[battery.format("%01.0i")]);
-
-			//draw battery '%'
-			dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);
-			string = "%";
-			dc.drawText(125, 128, Gfx.FONT_SYSTEM_XTINY, string, Gfx.TEXT_JUSTIFY_LEFT);
-
-			//draw step goal
-			dc.setColor(Gfx.COLOR_DK_GRAY, Gfx.COLOR_TRANSPARENT);
-			dc.fillRectangle(100, 71, 75, 3);
-			dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT);
-			dc.drawText(100, 71, Gfx.FONT_SYSTEM_XTINY, steps, Gfx.TEXT_JUSTIFY_LEFT);
-			steps = 100 * steps / stepGoal;
-			dc.setColor(numColor, Gfx.COLOR_TRANSPARENT);
-			dc.fillRectangle(100, 71, steps, 3);
-		}
 		//draw minutes
-		dc.setColor(numColor, Gfx.COLOR_TRANSPARENT);
-		dc.drawText(150, 5, simpleFont, minString, Gfx.TEXT_JUSTIFY_LEFT);
+		string = clockTime.min;
+		string = Lang.format("$1$",[string.format("%02d")]);
+		mmTime.setText(string);
+		mmTime.setFont(simpleFont);
 
-		//draw hours
-		dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT);
-		dc.drawText(148, 5, simpleBoldFont, hourString, Gfx.TEXT_JUSTIFY_RIGHT);
+		View.onUpdate(dc); //draw everything in the layout
 
-		//draw seconds
-		dc.drawText(200, 65, Gfx.FONT_MEDIUM, secString, Gfx.TEXT_JUSTIFY_RIGHT);
+		if (showOther) { //draw dynamic things on top of the layout
+			//draw step goal & filler
+			stepBarDraw = new Rez.Drawables.stepBar();
+			stepBarDraw.draw(dc);
+			dc.setColor($.numColor, Gfx.COLOR_TRANSPARENT);
 
-		//draw day | month | date
-		string = day + " " + date + " " + month;
-		dc.drawText(200, 128, Gfx.FONT_SMALL, string, Gfx.TEXT_JUSTIFY_RIGHT);
-
-		//draw battery % value
-		dc.drawText(122, 128, Gfx.FONT_SYSTEM_XTINY, batString, Gfx.TEXT_JUSTIFY_RIGHT);
+			if (deviceSettings.screenShape == Sys.SCREEN_SHAPE_ROUND) {
+					if (steps < stepGoal) {
+						steps = 70 * steps / stepGoal; //total width calc for %
+					}
+					else {
+						steps = 70;
+					}
+					dc.fillRectangle(106, 142, steps, 3);
+			}
+			else if (deviceSettings.screenShape == Sys.SCREEN_SHAPE_SEMI_ROUND) {
+				Sys.println("semi");
+			}
+			else {
+				if (deviceSettings.screenWidth > 148) {
+					if (steps < stepGoal) {
+						steps = 75 * steps / stepGoal; //total width calc for %
+					}
+					else {
+						steps = 75;
+					}
+					dc.fillRectangle(100, 71, steps, 3);
+				}
+				else {
+					if (steps < stepGoal) {
+						steps = 40 * steps / stepGoal; //total width calc for %
+					}
+					else {
+						steps = 40;
+					}
+					dc.fillRectangle(105, 149, steps, 3);
+				}
+			}
+		}
 	}
 
 	function onExitSleep() {
@@ -145,18 +177,7 @@ class NicholeFaceView extends Ui.WatchFace {
 	}
 
 	function onEnterSleep() {
-		clearData();
-		Ui.requestUpdate();
-	}
-
-	function clearData() {
-		secString = "";
-		batString = "";
-		day = "";
-		date = "";
-		month = "";
-		steps = "";
 		showOther = false;
-		return true;
+		Ui.requestUpdate();
 	}
 }

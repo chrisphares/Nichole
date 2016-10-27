@@ -1,10 +1,16 @@
+using Toybox.System as Sys;
+using Toybox.Graphics as Gfx;
 using Toybox.Application as App;
-using Toybox.WatchUi as Ui;
+
+//Global variables
+var numColor = Gfx.COLOR_DK_RED;
+var hairColor = Gfx.COLOR_YELLOW;
+var shirtColor = Gfx.COLOR_RED;
 
 class NicholeFaceApp extends App.AppBase {
 
 	function initialize() {
-		AppBase.initialize();
+		AppBase.initialize({});
     }
 
 	// onStart() is called on application start up
@@ -16,6 +22,6 @@ class NicholeFaceApp extends App.AppBase {
 	}
 
 	function getInitialView() {
-		return [new NicholeFaceView(), new Ui.BehaviorDelegate()];
+		return [new NicholeFaceView()];
 	}
 }

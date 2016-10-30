@@ -121,13 +121,13 @@ class NicholeFaceView extends Ui.WatchFace {
 		}
 		hhTime.setText(string);
 		hhTime.setFont(simpleBoldFont);
-		hhTime.setColor($.numColor);
 
 		//draw minutes
 		string = clockTime.min;
 		string = Lang.format("$1$",[string.format("%02d")]);
 		mmTime.setText(string);
 		mmTime.setFont(simpleFont);
+		mmTime.setColor($.numColor);
 
 		View.onUpdate(dc); //draw everything in the layout
 
@@ -147,7 +147,15 @@ class NicholeFaceView extends Ui.WatchFace {
 					dc.fillRectangle(106, 142, steps, 3);
 			}
 			else if (deviceSettings.screenShape == Sys.SCREEN_SHAPE_SEMI_ROUND) {
-				Sys.println("semi");
+				if (deviceSettings.screenWidth > 148) {
+					if (steps < stepGoal) {
+						steps = 75 * steps / stepGoal; //total width calc for %
+					}
+					else {
+						steps = 75;
+					}
+					dc.fillRectangle(106, 126, steps, 3);
+				}
 			}
 			else {
 				if (deviceSettings.screenWidth > 148) {

@@ -7,7 +7,6 @@
             <iq:product id="round_watch"/>
             <iq:product id="semi_round_watch"/>
             <iq:product id="vivoactive"/>
-            <iq:product id="fr920xt"/>
         </iq:products>
 
         <iq:permissions/>
